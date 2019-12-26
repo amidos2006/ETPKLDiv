@@ -6,6 +6,8 @@ export default class Chromosome{
     this._random = random;
 
     this._epsilon = 1e-6;
+    this._first = null;
+    this._second = null;
     this._fitness = null;
 
     this._width = width;
@@ -99,18 +101,26 @@ export default class Chromosome{
       first += p_dash * Math.log(p_dash/q_dash);
       second += q_dash * Math.log(q_dash/p_dash);
     }
-    return -(w * first + (1-w) * second)
+    this._first = first;
+    this._second = second;
+    this._fitness = -(w * this._first + (1-w) * this._second);
   }
 
-  calculateDivergence(tp_size, inter_weight){
-    if(this._fitness != null){
+  calculateDivergence(tp_size, inter_weight=0.5){
+    if(this._first != null && this._second != null){
+      this._fitness = -(inter_weight * this._first + (1-inter_weight) * this._second);
       return;
     }
-    if(typeof inter_weight == undefined){
-      inter_weight = 0.5;
-    }
     const [probs,patterns,border_patterns] = calculateTilePatternProbabilities([this._map], [tp_size]);
-    this._fitness = this._calculateKLDivergence(probs[tp_size], this._tpdict.getQProbability(tp_size), inter_weight);
+    this._calculateKLDivergence(probs[tp_size], this._tpdict.getQProbability(tp_size), inter_weight);
+  }
+
+  getFitness(){
+    return this._fitness;
+  }
+
+  getMap(){
+    return this._map;
   }
 
   mutate(tp_sizes, mut_times, borders){
