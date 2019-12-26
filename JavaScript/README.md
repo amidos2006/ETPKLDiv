@@ -3,7 +3,7 @@
 This is the javascript implementation of the ETPKLDiv method introduced by Lucas and Volz. For more understanding about the main algorithm and the interface check the main README.
 
 ## How to use
-The library is written in ES6 and compiled to [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) standard using [rollup.js](https://rollupjs.org/guide/en/). The compiled file can be found in the bin folder. Add the [`ETPKLDiv.js`]() to the same folder beside your index.html. Then add the following tag in your index.html:
+The library is written in ES6 and compiled to [iife](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) standard using [rollup.js](https://rollupjs.org/guide/en/). The compiled file can be found in the bin folder. Add the compiled file ([`ETPKLDiv.js`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/bin/ETPKLDiv.js)) to the same folder beside your `index.html`. Then add the following tag in your `index.html`:
 ```html
 <html>
   ...
@@ -12,9 +12,9 @@ The library is written in ES6 and compiled to [iife](https://developer.mozilla.o
 </html>
 ```
 
-The way to use the library is pretty the same between all languages. It involves creating an object of the [`EPKLDiv`]() class. Followed by one of these two methods:
+The way to use the library is pretty the same between all languages. It involves creating an object of the [`EPKLDiv`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js) class. Followed by one of these two methods:
 
-- *step by step:* you will need to call `initialize` once followed by calling `step` as many as needed. To get the best fitness call `getFitness` function and to get the best generated map call `getMap`. Here is a simple example to illustrate:
+- **step by step:** you will need to call `initialize` once followed by calling `step` as many as needed. To get the best fitness call `getFitness` function and to get the best generated map call `getMap`. Here is a simple example to illustrate:
 
 ```javascript
 // input_sample is a 2D matrix of integers - 3 is the size of the pattern being sampled
@@ -34,7 +34,7 @@ let finalMap = etpkldiv.getMap();
 let finalFitness = etpkldiv.getFitness();
 ```
 
-- *full generation:* you will need to call `generate` and wait till it is done and return the best chromosome. After done, you can check for the fitness using `getFitness` or improve the result by calling `step` as many times as needed (beware: calling `generate` again will restart everything from scratch erasing any previous progress). Here is a simple example to illustrate:
+- **full generation:** you will need to call `generate` and wait till it is done and return the best chromosome. After done, you can check for the fitness using `getFitness` or improve the result by calling `step` as many times as needed (beware: calling `generate` again will restart everything from scratch erasing any previous progress). Here is a simple example to illustrate:
 
 ```javascript
 // input_sample is a 2D matrix of integers - 3 is the size of the pattern being sampled
