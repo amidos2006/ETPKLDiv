@@ -2,7 +2,7 @@
 ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf) in GECCO 2019. The name stands for Evolutionary Tile Pattern KL-Divergence algorithm. The authors showed amazing results and compared it to [GAN](https://arxiv.org/abs/1805.00728) and to [WFC](https://github.com/mxgmn/WaveFunctionCollapse) and it have very competitive results. The algorithm was able to work on small or big inputs which neither GANs nor WFC are able to do. Beside that, ETPKLDiv is always able to return a generated map and doesn't stuck like WFC. The following table is pulled from the paper and shows the comparison between all the algorithms.
 
 <center>
-  
+
 | Method | Training Time | Generation | Tiny Input |
 | ------ | ------------- | ---------- | ---------- |
 | ETPKLDiv | Fast | Fast to Medium, Never Fails | Yes |
