@@ -1,69 +1,11 @@
-import Random from "./Random.js"
-import TPDict from "./TPDict.js"
-import Chromosome from "./Chromosome.js"
+import EvolutionStrategy from "./EvolutionStrategy.js"
 
 export default class ETPKLDiv{
   /**
    *  create the ETPKLDiv object to be used in generation
    **/
   constructor(){
-    this._random = new Random();
-    this._tpdict = null;
-    this._chromosomes = null;
-  }
-
-  /**
-   *  Get a chromosome probabilistically based on its rank (the last element has the highest rank)
-   *
-   *  @access private
-   *
-   *  @param {Chromosome[]} chromosomes  a list of all the possible maps
-   *
-   *  @return {Chromosome} the selected chromosome
-   **/
-  _rankSelection(chromosomes){
-    let prob=[];
-    let total=0;
-    for(let i=0; i<chromosomes.length; i++){
-      prob.push(i+1);
-      if(i > 0){
-        prob[i] += prob[i-1];
-      }
-      total += prob[prob.length-1];
-    }
-    let temp = this._random.next();
-    for(let i=0; i<chromosomes.length; i++){
-      if(temp < prob[i] / total){
-        return chromosomes[i];
-      }
-    }
-    return chromosomes[chromosomes.length-1];
-  }
-
-  /**
-   *  Compute the fitness for all the chromosomes, this was separated in a function for future usage of using parallelism
-   *
-   *  @access private
-   *
-   *  @param {Chromosome[]} chromosomes  a list of all the possible maps
-   *  @param {float}        inter_weight the Asymmetric weight defined from Lucas and Volz work. It balances between having the input_sample have at least one of each pattern in the generated image or vice versa.
-   **/
-  _computeDivergenceFintess(chromosomes, inter_weight){
-    for(let c of chromosomes){
-      c.calculateDivergence(this._tp_size, inter_weight);
-    }
-  }
-
-  /**
-   *  Sort the chromosomes based on their fitness and temperature noise input
-   *
-   *  @access private
-   *
-   *  @param {Chromosome[]} chromosomes  a list of all the possible maps
-   *  @param {float}        noise        an additional uniform noise added during sorting, it helps to get out local minimum similar to the temprature in simulated annealing
-   **/
-  _sortChromosomes(chromosomes, noise){
-    chromosomes.sort((c1, c2) => {return c1.getFitness() - c2.getFitness() + noise * (this._random.next()*2-1)});
+    this._es = new EvolutionStrategy();
   }
 
   /**
@@ -76,18 +18,19 @@ export default class ETPKLDiv{
    *  @param {Object}  [borders=null] an object that allow the edges to be similar to the edges from the input_samples
    */
   initializePatternDictionary(input_samples, tp_size, warp = null, borders = null){
+    if(!(input_samples instanceof Array)){
+      throw "input_samples has to be a 2D input array or 3D where the 3rd dimensions are different inputs (example different levels)";
+    }
+    if(!(input_samples[0] instanceof Array)){
+      throw "input_samples has to be a 2D input array or 3D where the 3rd dimensions are different inputs (example different levels)";
+    }
+    if(input_samples[0][0] instanceof Array && input_samples[0][0][0] instanceof Array){
+      throw "input_samples has to be a 2D input array or 3D where the 3rd dimensions are different inputs (example different levels)";
+    }
     if(tp_size <= 1){
       tp_size = 2;
     }
-    let sizes = [];
-    for(let i=1; i<=tp_size; i++){
-      sizes.push(i);
-    }
-
-    this._tpdict = new TPDict(input_samples, sizes, warp, borders);
-    this._tp_size = tp_size;
-    this._warp = warp;
-    this._borders = borders;
+    this._es.initializePatternDictionary(input_samples, tp_size, warp, borders);
   }
 
   /**
@@ -99,17 +42,16 @@ export default class ETPKLDiv{
    *  @param {int}   [pop_size=1]       the number of generated map at once (having more maps in parallel) helps find good solution faster
    **/
   initializeGeneration(width, height, pop_size=1){
-    if(this._tpdict == null){
-      throw "you must call initializePatternDictionary first."
+    if(width < this._es._tp_size){
+      throw "width has to be bigger than or equal to tp_size"
     }
-
-    this._iteration = 0;
-
-    this._chromosomes = [];
-    for(let i=0; i<pop_size; i++){
-      this._chromosomes.push(new Chromosome(this._tpdict, this._random, width, height));
-      this._chromosomes[i].randomInitialize(1, this._borders);
+    if(height < this._es._tp_size){
+      throw "height has to be bigger than or equal to tp_size"
     }
+    if(pop_size < 1){
+      throw "pop_size can be minimum 1"
+    }
+    this._es.initializeGeneration(width, height, pop_size);
   }
 
   /**
@@ -120,61 +62,34 @@ export default class ETPKLDiv{
    *  @param {float} [noise=0]          noise value to push the algorithm away from certain arrays and embrace some new noise
    **/
   step(inter_weight=0.5, mut_times=1, noise=0){
-    if(this._tpdict == null){
-      throw "you must call initializePatternDictionary before calling this function."
+    if(mut_times < 1){
+      throw "mut_times has to be bigger than 1"
     }
-    if(this._chromosomes == null){
-      throw "you must call initializeGeneration before calling this function."
+    if(noise < 0){
+      throw "noise must be >= 0"
     }
-
-    if(this._iteration == 0){
-      this._computeDivergenceFintess(this._chromosomes, inter_weight);
-      this._sortChromosomes(this._chromosomes, noise);
-    }
-
-    let new_chromosomes = [];
-    for(let j=0; j<this._chromosomes.length; j++){
-      let c = this._rankSelection(this._chromosomes).mutate(this._tp_size, mut_times, this._borders);
-      new_chromosomes.push(c);
-    }
-    this._chromosomes = this._chromosomes.concat(new_chromosomes);
-    this._computeDivergenceFintess(this._chromosomes, inter_weight);
-    this._sortChromosomes(this._chromosomes, noise);
-    this._chromosomes = this._chromosomes.splice(this._chromosomes.length/2);
-    this._iteration += 1;
+    this._es.step(inter_weight=0.5, mut_times=1, noise=0);
   }
 
   /**
    *  Get the fitness of the best chromosome in the generation
    */
   getFitness(){
-    if(this._chromosomes == null){
-      throw "you must call initializeGeneration before calling this function."
-    }
-
-    return this._chromosomes[this._chromosomes.length - 1].getFitness();
+    return this._es.getFitness();
   }
 
   /**
    *  Get the map of the best chromosome in the generation
    */
   getMap(){
-    if(this._chromosomes == null){
-      throw "you must call initializeGeneration before calling this function."
-    }
-
-    return this._chromosomes[this._chromosomes.length - 1].getMap();
+    return this._es.getMap();
   }
 
   /**
    *  Get the current iteration
    */
   getIteration(){
-    if(this._chromosomes == null){
-      throw "you must call initializeGeneration before calling this function."
-    }
-
-    return this._iteration;
+    return this._es.getIteration();
   }
 
   /**
@@ -185,13 +100,7 @@ export default class ETPKLDiv{
    *  @param {int} value the locked value
    */
   lockTile(x, y, value){
-    if(this._chromosomes == null){
-      throw "you must call initializeGeneration before calling this function."
-    }
-
-    for(let c of this._chromosomes){
-      c.lockTile(x, y, value);
-    }
+    this._es.lockTile(x, y, value);
   }
 
   /**
@@ -201,26 +110,14 @@ export default class ETPKLDiv{
    *  @param {int} y     the locked y location
    */
   unlockTile(x, y){
-    if(this._chromosomes == null){
-      throw "you must call initializeGeneration before calling this function."
-    }
-
-    for(let c of this._chromosomes){
-      c.unlockTile(x, y);
-    }
+    this._es.unlockTile(x, y);
   }
 
   /**
    *  unlock all the locked tiles in the generated maps
    */
   unlockAll(){
-    if(this._chromosomes == null){
-      throw "you must call initializeGeneration before calling this function."
-    }
-
-    for(let c of this._chromosomes){
-      c.unlockAll();
-    }
+    this._es.unlockAll();
   }
 
   /**
@@ -242,9 +139,8 @@ export default class ETPKLDiv{
    */
   generate(input_samples, tp_size, width, height, iterations=10000, warp=null, borders=null, pop_size=1, inter_weight=0.5, mut_times=1, noise=0){
     this.initializePatternDictionary(input_samples, tp_size, warp, borders);
-    this.initializePatternDictionary();
     this.initializeGeneration(width, height, pop_size);
-    for(;this._iteration<iterations; this._iteration++){
+    while(this.getIteration()<iterations){
       this.step(inter_weight, mut_times, noise);
     }
   }

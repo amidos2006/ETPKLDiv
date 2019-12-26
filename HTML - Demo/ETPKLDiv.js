@@ -305,9 +305,9 @@ var ETPKLDiv = (function () {
     }
   }
 
-  class ETPKLDiv{
+  class EvolutionStrategy{
     /**
-     *  create the ETPKLDiv object to be used in generation
+     *  create the Evolution Strategy object to be used in generation
      **/
     constructor(){
       this._random = new Random();
@@ -375,18 +375,14 @@ var ETPKLDiv = (function () {
      *
      *  @param {int[][]} input_samples  the input integer matrix that the algorithm sample from
      *  @param {int}     tp_size        the size of the tile patterns used in generation larger than 1
-     *  @param {Object}  [warp=null]    an object that allow the patterns to sample by wrapping across the edges
-     *  @param {Object}  [borders=null] an object that allow the edges to be similar to the edges from the input_samples
+     *  @param {Object}  warp           an object that allow the patterns to sample by wrapping across the edges
+     *  @param {Object}  borders        an object that allow the edges to be similar to the edges from the input_samples
      */
-    initializePatternDictionary(input_samples, tp_size, warp = null, borders = null){
-      if(tp_size <= 1){
-        tp_size = 2;
-      }
+    initializePatternDictionary(input_samples, tp_size, warp, borders){
       let sizes = [];
       for(let i=1; i<=tp_size; i++){
         sizes.push(i);
       }
-
       this._tpdict = new TPDict(input_samples, sizes, warp, borders);
       this._tp_size = tp_size;
       this._warp = warp;
@@ -399,9 +395,9 @@ var ETPKLDiv = (function () {
      *
      *  @param {int}   width              the width of the generated map
      *  @param {int}   height             the height of the generated map
-     *  @param {int}   [pop_size=1]       the number of generated map at once (having more maps in parallel) helps find good solution faster
+     *  @param {int}   pop_size           the number of generated map at once (having more maps in parallel) helps find good solution faster
      **/
-    initializeGeneration(width, height, pop_size=1){
+    initializeGeneration(width, height, pop_size){
       if(this._tpdict == null){
         throw "you must call initializePatternDictionary first."
       }
@@ -422,7 +418,7 @@ var ETPKLDiv = (function () {
      *  @param {int}   [mut_times=1]      the maximum number of modifications the algorithm is allowed to do in one step
      *  @param {float} [noise=0]          noise value to push the algorithm away from certain arrays and embrace some new noise
      **/
-    step(inter_weight=0.5, mut_times=1, noise=0){
+    step(inter_weight, mut_times, noise){
       if(this._tpdict == null){
         throw "you must call initializePatternDictionary before calling this function."
       }
@@ -525,6 +521,127 @@ var ETPKLDiv = (function () {
         c.unlockAll();
       }
     }
+  }
+
+  class ETPKLDiv{
+    /**
+     *  create the ETPKLDiv object to be used in generation
+     **/
+    constructor(){
+      this._es = new EvolutionStrategy();
+    }
+
+    /**
+     *  Initialize the pattern dictionary that is used during generation
+     *  only call that function when you want to change any aspect of the patterns
+     *
+     *  @param {int[][]} input_samples  the input integer matrix that the algorithm sample from
+     *  @param {int}     tp_size        the size of the tile patterns used in generation larger than 1
+     *  @param {Object}  [warp=null]    an object that allow the patterns to sample by wrapping across the edges
+     *  @param {Object}  [borders=null] an object that allow the edges to be similar to the edges from the input_samples
+     */
+    initializePatternDictionary(input_samples, tp_size, warp = null, borders = null){
+      if(!(input_samples instanceof Array)){
+        throw "input_samples has to be a 2D input array or 3D where the 3rd dimensions are different inputs (example different levels)";
+      }
+      if(!(input_samples[0] instanceof Array)){
+        throw "input_samples has to be a 2D input array or 3D where the 3rd dimensions are different inputs (example different levels)";
+      }
+      if(input_samples[0][0] instanceof Array && input_samples[0][0][0] instanceof Array){
+        throw "input_samples has to be a 2D input array or 3D where the 3rd dimensions are different inputs (example different levels)";
+      }
+      if(tp_size <= 1){
+        tp_size = 2;
+      }
+      this._es.initializePatternDictionary(input_samples, tp_size, warp, borders);
+    }
+
+    /**
+     *  Initialize the algorithm with a bunch of randomly generated maps
+     *  only call after calling initializePatternDictionary
+     *
+     *  @param {int}   width              the width of the generated map
+     *  @param {int}   height             the height of the generated map
+     *  @param {int}   [pop_size=1]       the number of generated map at once (having more maps in parallel) helps find good solution faster
+     **/
+    initializeGeneration(width, height, pop_size=1){
+      if(width < this._es._tp_size){
+        throw "width has to be bigger than or equal to tp_size"
+      }
+      if(height < this._es._tp_size){
+        throw "height has to be bigger than or equal to tp_size"
+      }
+      if(pop_size < 1){
+        throw "pop_size can be minimum 1"
+      }
+      this._es.initializeGeneration(width, height, pop_size);
+    }
+
+    /**
+     *  Advance the algorithm one step you need to call initializeGeneration and initializePatternDictionary first
+     *
+     *  @param {float} [inter_weight=0.5] the Asymmetric weight defined from Lucas and Volz work. It balances between having the input_sample have at least one of each pattern in the generated image or vice versa.
+     *  @param {int}   [mut_times=1]      the maximum number of modifications the algorithm is allowed to do in one step
+     *  @param {float} [noise=0]          noise value to push the algorithm away from certain arrays and embrace some new noise
+     **/
+    step(inter_weight=0.5, mut_times=1, noise=0){
+      if(mut_times < 1){
+        throw "mut_times has to be bigger than 1"
+      }
+      if(noise < 0){
+        throw "noise must be >= 0"
+      }
+      this._es.step(inter_weight=0.5, mut_times=1, noise=0);
+    }
+
+    /**
+     *  Get the fitness of the best chromosome in the generation
+     */
+    getFitness(){
+      return this._es.getFitness();
+    }
+
+    /**
+     *  Get the map of the best chromosome in the generation
+     */
+    getMap(){
+      return this._es.getMap();
+    }
+
+    /**
+     *  Get the current iteration
+     */
+    getIteration(){
+      return this._es.getIteration();
+    }
+
+    /**
+     *  Lock a certain tile to a certain value so it won't be affected with the Generation process
+     *
+     *  @param {int} x     the locked x location
+     *  @param {int} y     the locked y location
+     *  @param {int} value the locked value
+     */
+    lockTile(x, y, value){
+      this._es.lockTile(x, y, value);
+    }
+
+    /**
+     *  Unlock a certain tile in the generated maps
+     *
+     *  @param {int} x     the locked x location
+     *  @param {int} y     the locked y location
+     */
+    unlockTile(x, y){
+      this._es.unlockTile(x, y);
+    }
+
+    /**
+     *  unlock all the locked tiles in the generated maps
+     */
+    unlockAll(){
+      this._es.unlockAll();
+    }
 
     /**
      *  Run the algorithm for a fixed amount of iterations.
@@ -545,9 +662,8 @@ var ETPKLDiv = (function () {
      */
     generate(input_samples, tp_size, width, height, iterations=10000, warp=null, borders=null, pop_size=1, inter_weight=0.5, mut_times=1, noise=0){
       this.initializePatternDictionary(input_samples, tp_size, warp, borders);
-      this.initializePatternDictionary();
       this.initializeGeneration(width, height, pop_size);
-      for(;this._iteration<iterations; this._iteration++){
+      while(this.getIteration()<iterations){
         this.step(inter_weight, mut_times, noise);
       }
     }

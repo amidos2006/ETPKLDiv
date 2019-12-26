@@ -18,6 +18,9 @@
       image-rendering: crisp-edges;
       border: 1px solid black;
     }
+    hr{
+      width:500px;
+    }
     h1{
       margin: 0px;
     }
@@ -36,6 +39,7 @@
     <div class="full-row">
       <h1>ETP-KLDiv Demo</h1>
     </div>
+    <hr>
     <div class="full-row">
       <canvas id="output_render"></canvas>
     </div>
@@ -43,11 +47,12 @@
       <div class="full-row">
         <span>Iteration: </span><span id="iter-number">0</span>
         <br>
-        <span> Fitness: </span><span id="fitness">0</span>
+        <span> Fitness: </span><span id="fitness">-Infinity</span>
       </div>
+      <hr>
       <div class="full-row">
         <span>Input: </span>
-        <select id="input_data" onchange="restartGeneration()">
+        <select id="input_data" onchange="loadDefaultSettings(); restartGeneration()">
           <option value="redblack">Red & Black</option>
           <option value="whiteblack">White & Black</option>
           <option value="flower">Flowers</option>
@@ -85,6 +90,7 @@
           <option value="8">8</option>
         </select>
       </div>
+      <hr>
       <div class="full-row">
         <span>Lock/Unlock Tiles: </span>
         <template><input type="radio" name="lock" value="unlock"><img src="data/hover_image.png"></img></input></template>
@@ -101,10 +107,19 @@
       <div class="full-row">
         <span>Number of Mutations: </span><input id="mutations" min=1 max=5 value=1 type="range"></input>
       </div>
+      <hr>
       <div class="full-row">
         <button onclick="restartGeneration()">Restart</button>
         <button onclick="startPauseGeneration()">Start</button>
       </div>
+    </div>
+    <hr>
+    <div class="full-row">
+      Based on  <a href="https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf">Lucas and Volz work</a>.
+      <br>
+      Created by <a href="http://akhalifa.com">Ahmed Khalfia</a>.
+      <br>
+      Check the full source code on  <a href="https://github.com/amidos2006/ETPKLDiv">Github</a>.
     </div>
   </body>
   <script type="text/javascript" src="ETPKLDiv.js"></script>
@@ -279,6 +294,73 @@
       document.getElementById("fitness").innerText = etpkldiv.getFitness();
     }
 
+    function loadDefaultSettings(){
+      let settings={
+        "redblack":{
+          "tp_size": 0,
+          "pop_size": 0,
+          "warp_x": true,
+          "warp_y": true,
+          "border_bot": false,
+          "border_top": false,
+          "border_left": false,
+          "border_right": false
+        },
+        "whiteblack":{
+          "tp_size": 0,
+          "pop_size": 0,
+          "warp_x": true,
+          "warp_y": true,
+          "border_bot": false,
+          "border_top": false,
+          "border_left": false,
+          "border_right": false
+        },
+        "flower":{
+          "tp_size": 1,
+          "pop_size": 3,
+          "warp_x": false,
+          "warp_y": false,
+          "border_bot": true,
+          "border_top": true,
+          "border_left": false,
+          "border_right": false
+        },
+        "loderunner":{
+          "tp_size": 1,
+          "pop_size": 1,
+          "warp_x": true,
+          "warp_y": true,
+          "border_bot": true,
+          "border_top": false,
+          "border_left": false,
+          "border_right": false
+        },
+        "mario":{
+          "tp_size": 2,
+          "pop_size": 3,
+          "warp_x": false,
+          "warp_y": false,
+          "border_bot": true,
+          "border_top": true,
+          "border_left": false,
+          "border_right": false
+        }
+      }
+
+      let name = document.getElementById("input_data");
+      name = name[name.selectedIndex].value;
+
+      for(let index in settings[name]){
+        if (index.indexOf("size") >= 0){
+          document.getElementById(index).selectedIndex = settings[name][index];
+        }
+        else{
+          document.getElementById(index).checked = settings[name][index];
+        }
+      }
+    }
+
     function restartGeneration(){
       lockedTiles = {};
 
@@ -319,7 +401,7 @@
       renderMap(outputCanvas, outputContext2D, inputData.img, etpkldiv.getMap());
 
       document.getElementById("iter-number").innerText = etpkldiv.getIteration();
-      document.getElementById("fitness").innerText = etpkldiv.getFitness();
+      document.getElementById("fitness").innerText = "-Infinity";
     }
 
     function startPauseGeneration(){
