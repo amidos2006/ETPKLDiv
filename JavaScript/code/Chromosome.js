@@ -13,10 +13,13 @@ export default class Chromosome{
     this._width = width;
     this._height = height;
     this._map = [];
+    this._locked = [];
     for(let i=0; i<this._height; i++){
       this._map.push([]);
+      this._locked.push([]);
       for(let j=0; j<this._width; j++){
         this._map[i].push(0);
+        this._locked[i].push(false);
       }
     }
   }
@@ -61,6 +64,7 @@ export default class Chromosome{
     for(let i=0; i<this._map.length; i++){
       for(let j=0; j<this._map[i].length; j++){
         clone._map[i][j] = this._map[i][j];
+        clone._locked[i][j] = this._locked[i][j];
       }
     }
     clone._fitness = this._fitness;
@@ -70,7 +74,9 @@ export default class Chromosome{
   _applyTP(pattern, x, y){
     for(let i=0; i<pattern.length; i++){
       for(let j=0; j<pattern[i].length; j++){
-        this._map[y+i][x+j] = pattern[i][j];
+        if(!this._locked[y+i][x+j]){
+          this._map[y+i][x+j] = pattern[i][j];
+        }
       }
     }
   }
@@ -158,5 +164,22 @@ export default class Chromosome{
       }
     }
     return clone;
+  }
+
+  lockTile(x, y, value){
+    this._locked[y][x] = true;
+    this._map[y][x] = value;
+  }
+
+  unlockTile(x, y){
+    this._locked[y][x] = false;
+  }
+
+  unlockAll(){
+    for(let y=0; y<this._height; y++){
+      for(let x=0; x<this._width; x++){
+        this._locked[y][x] = false;
+      }
+    }
   }
 }

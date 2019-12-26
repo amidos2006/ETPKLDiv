@@ -167,6 +167,63 @@ export default class ETPKLDiv{
   }
 
   /**
+   *  Get the current iteration
+   */
+  getIteration(){
+    if(this._chromosomes == null){
+      throw "you must call initializeGeneration before calling this function."
+    }
+
+    return this._iteration;
+  }
+
+  /**
+   *  Lock a certain tile to a certain value so it won't be affected with the Generation process
+   *
+   *  @param {int} x     the locked x location
+   *  @param {int} y     the locked y location
+   *  @param {int} value the locked value
+   */
+  lockTile(x, y, value){
+    if(this._chromosomes == null){
+      throw "you must call initializeGeneration before calling this function."
+    }
+
+    for(let c of this._chromosomes){
+      c.lockTile(x, y, value);
+    }
+  }
+
+  /**
+   *  Unlock a certain tile in the generated maps
+   *
+   *  @param {int} x     the locked x location
+   *  @param {int} y     the locked y location
+   */
+  unlockTile(x, y){
+    if(this._chromosomes == null){
+      throw "you must call initializeGeneration before calling this function."
+    }
+
+    for(let c of this._chromosomes){
+      c.unlockTile(x, y);
+    }
+  }
+
+  /**
+   *  unlock all the locked tiles in the generated maps
+   */
+  unlockAll(){
+    if(this._chromosomes == null){
+      throw "you must call initializeGeneration before calling this function."
+    }
+
+    for(let c of this._chromosomes){
+      c.unlockAll();
+    }
+  }
+
+  /**
    *  Run the algorithm for a fixed amount of iterations.
    *  This function doesn't need anything to be called before hand.
    *  You can call step to enhance the generation after that function is done

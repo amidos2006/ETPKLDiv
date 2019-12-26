@@ -134,10 +134,13 @@ var ETPKLDiv = (function () {
       this._width = width;
       this._height = height;
       this._map = [];
+      this._locked = [];
       for(let i=0; i<this._height; i++){
         this._map.push([]);
+        this._locked.push([]);
         for(let j=0; j<this._width; j++){
           this._map[i].push(0);
+          this._locked[i].push(false);
         }
       }
     }
@@ -182,6 +185,7 @@ var ETPKLDiv = (function () {
       for(let i=0; i<this._map.length; i++){
         for(let j=0; j<this._map[i].length; j++){
           clone._map[i][j] = this._map[i][j];
+          clone._locked[i][j] = this._locked[i][j];
         }
       }
       clone._fitness = this._fitness;
@@ -191,7 +195,9 @@ var ETPKLDiv = (function () {
     _applyTP(pattern, x, y){
       for(let i=0; i<pattern.length; i++){
         for(let j=0; j<pattern[i].length; j++){
-          this._map[y+i][x+j] = pattern[i][j];
+          if(!this._locked[y+i][x+j]){
+            this._map[y+i][x+j] = pattern[i][j];
+          }
         }
       }
     }
@@ -279,6 +285,23 @@ var ETPKLDiv = (function () {
         }
       }
       return clone;
+    }
+
+    lockTile(x, y, value){
+      this._locked[y][x] = true;
+      this._map[y][x] = value;
+    }
+
+    unlockTile(x, y){
+      this._locked[y][x] = false;
+    }
+
+    unlockAll(){
+      for(let y=0; y<this._height; y++){
+        for(let x=0; x<this._width; x++){
+          this._locked[y][x] = false;
+        }
+      }
     }
   }
 
@@ -444,6 +467,63 @@ var ETPKLDiv = (function () {
       }
 
       return this._chromosomes[this._chromosomes.length - 1].getMap();
+    }
+
+    /**
+     *  Get the current iteration
+     */
+    getIteration(){
+      if(this._chromosomes == null){
+        throw "you must call initializeGeneration before calling this function."
+      }
+
+      return this._iteration;
+    }
+
+    /**
+     *  Lock a certain tile to a certain value so it won't be affected with the Generation process
+     *
+     *  @param {int} x     the locked x location
+     *  @param {int} y     the locked y location
+     *  @param {int} value the locked value
+     */
+    lockTile(x, y, value){
+      if(this._chromosomes == null){
+        throw "you must call initializeGeneration before calling this function."
+      }
+
+      for(let c of this._chromosomes){
+        c.lockTile(x, y, value);
+      }
+    }
+
+    /**
+     *  Unlock a certain tile in the generated maps
+     *
+     *  @param {int} x     the locked x location
+     *  @param {int} y     the locked y location
+     */
+    unlockTile(x, y){
+      if(this._chromosomes == null){
+        throw "you must call initializeGeneration before calling this function."
+      }
+
+      for(let c of this._chromosomes){
+        c.unlockTile(x, y);
+      }
+    }
+
+    /**
+     *  unlock all the locked tiles in the generated maps
+     */
+    unlockAll(){
+      if(this._chromosomes == null){
+        throw "you must call initializeGeneration before calling this function."
+      }
+
+      for(let c of this._chromosomes){
+        c.unlockAll();
+      }
     }
 
     /**
