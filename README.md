@@ -8,8 +8,11 @@ ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@
 | GAN | Slow | Always Fast, Never Fails | No |
 | ELSGAN | Slow | Slow, Never Fails | No |
 
-Here are some example of the generated inputs using the [online interactive demo](http://www.akhalifa.com/etpkldiv/)
+Here are some example of the generated inputs using the [online interactive demo](http://www.akhalifa.com/etpkldiv/):
 
+<center>
+<img src="ETPKLDiv.png"></img>
+</center>
 ## Algorithm
 
 ## Common API interface
