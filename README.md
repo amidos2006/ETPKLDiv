@@ -1,4 +1,16 @@
 # ETPKLDiv Algorithm Implementation
+ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf) in GECCO 2019. The name stands for Evolutionary Tile Pattern KL-Divergence algorithm. The authors showed amazing results and compared it to [GAN](https://arxiv.org/abs/1805.00728) and to [WFC](https://github.com/mxgmn/WaveFunctionCollapse) and it have very competitive results. The algorithm was able to work on small or big inputs which neither GANs nor WFC are able to do. Beside that, ETPKLDiv is always able to return a generated map and doesn't stuck like WFC. The following table is pulled from the paper and shows the comparison between all the algorithms.
+
+| Method | Training Time | Generation | Tiny Input |
+| ------ | ------------- | ---------- | ---------- |
+| ETPKLDiv | Fast | Fast to Medium, Never Fails | Yes |
+| WFC | Fast | Fast to Slow, May Fail | Yes |
+| GAN | Slow | Always Fast, Never Fails | No |
+| ELSGAN | Slow | Slow, Never Fails | No |
+
+Here are some example of the generated inputs using the [online interactive demo](http://www.akhalifa.com/etpkldiv/)
+
+## Algorithm
 
 ## Common API interface
 The API for the `ETPKLDiv` class is the same between all the implementation. The following table show all the function that is provided by the `ETPKLDiv` class.
@@ -30,6 +42,7 @@ The API for the `ETPKLDiv` class is the same between all the implementation. The
 - Python Implementation
 - Java Implementation
 - Unity Demo
+- Phaser Demo
 - Defold Demo
 - Jupyter Notebook Demo
 - LibGDX Demo
@@ -39,3 +52,10 @@ The API for the `ETPKLDiv` class is the same between all the implementation. The
 ### A new implementation
 
 ### A new Demo
+Create a folder for the Demo. The name has to be the engine/languages name followed by " - Demo" similar to the "HTML - Demo". Get the latest build of the language needed from the corresponding language folder. Write your demo and make sure it is working fine. Make a pull request to the main repo.
+
+### Bugs and Pull Requests
+Bug reports and pull requests are welcome on GitHub at https://github.com/amidos2006/etpkldiv.
+
+##License
+This code is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

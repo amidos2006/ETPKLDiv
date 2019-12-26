@@ -68,7 +68,7 @@ export default class ETPKLDiv{
     if(noise < 0){
       throw "noise must be >= 0"
     }
-    this._es.step(inter_weight=0.5, mut_times=1, noise=0);
+    this._es.step(inter_weight, mut_times, noise);
   }
 
   /**
