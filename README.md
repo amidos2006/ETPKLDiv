@@ -68,5 +68,5 @@ Create a folder for the Demo. The name has to be the engine/languages name follo
 ### Bugs and Pull Requests
 Bug reports and pull requests are welcome on GitHub at https://github.com/amidos2006/etpkldiv.
 
-##License
+## License
 This code is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
