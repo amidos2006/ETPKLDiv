@@ -26,7 +26,7 @@ ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@
 Here are some example of the generated inputs using the [online interactive demo](http://www.akhalifa.com/etpkldiv/):
 
 <p algin="center">
-  <img style="position:relative; left: 200px" width="400px" src="ETPKLDiv.png" />
+  <img style="margin-left: 200px" width="400px" src="ETPKLDiv.png" />
 </p>
 
 As you can see from the picture that the ETPKLDiv is not as strict as WFC in generation which sometimes in harder problems (like Mario and Flowers) stuck in local optima. We think by some parameter turning you might be able to get better results than the shown above. Also, we would like to experiment with some quality diversity techniques and having crossover and see its effect.
