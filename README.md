@@ -34,6 +34,13 @@ As you can see from the picture that the ETPKLDiv is not as strict as WFC in gen
 ## Algorithm
 The algorithm is pretty simple with no complication. You can read more about it in [Lucas and Volz paper](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf). It uses an optimization algorithm (Evolution Strategy) to minimize the KL-Divergence value between the new generated map and the original data. KL-Divergence is a method that measure how close two distributions (in our case: the generated sample and the input sample) to each other. The distributions in our case is just a simple count of the different the tile pattern configurations of a certain size where tile pattern configurations are just a group of tiles beside each other. The algorithm at each step generate a new samples from the current by copying a tile pattern configuration from the input sample to the new one. The algorithm then pick the best and so on.
 
+Here is a some pictures of the algorithm in action:
+
+<p align="center">
+  <img src="redblack.gif" />
+  <img src="loderunner.gif" />
+</p>
+
 ## Common API interface
 The API for the `ETPKLDiv` class is the same between all the implementation. The following table show all the function that is provided by the `ETPKLDiv` class.
 
