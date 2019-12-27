@@ -1,12 +1,18 @@
-<center>
+<p align="center">
+	<img src="etpkldiv_logo.png"/>
+</p>
 
-# ETPKLDiv Algorithm Implementation
+<h1 align="center">
+	ETPKLDiv Algorithm Implementation
+</h1>
 
-</center>
+<p align="center">
+  <b>Current Framework Version: 0.5.0</b>
+</p>
 
 ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf) in GECCO 2019. The name stands for Evolutionary Tile Pattern KL-Divergence algorithm. The authors showed amazing results and compared it to [GAN](https://arxiv.org/abs/1805.00728) and to [WFC](https://github.com/mxgmn/WaveFunctionCollapse) and it have very competitive results. The algorithm was able to work on small or big inputs which neither GANs nor WFC are able to do. Beside that, ETPKLDiv is always able to return a generated map and doesn't stuck like WFC. The following table is pulled from the paper and shows the comparison between all the algorithms.
 
-<center>
+<p align="center">
 
 | Method | Training Time | Generation | Tiny Input |
 | ------ | ------------- | ---------- | ---------- |
@@ -15,13 +21,13 @@ ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@
 | GAN | Slow | Always Fast, Never Fails | No |
 | ELSGAN | Slow | Slow, Never Fails | No |
 
-</center>
+</p>
 
 Here are some example of the generated inputs using the [online interactive demo](http://www.akhalifa.com/etpkldiv/):
 
-<center>
-<img src="ETPKLDiv.png" />
-</center>
+<p algin="center">
+  <img src="ETPKLDiv.png" />
+</p>
 
 As you can see from the picture that the ETPKLDiv is not as strict as WFC in generation which sometimes in harder problems (like Mario and Flowers) stuck in local optima. We think by some parameter turning you might be able to get better results than the shown above. Also, we would like to experiment with some quality diversity techniques and having crossover and see its effect.
 
