@@ -37,11 +37,13 @@ The algorithm is pretty simple with no complication. You can read more about it 
 Here is a step by step algorithm if you are trying to replicate it:
 1. Create `pop_size` number of new samples with dimensions `width`x`height`. These samples values are randomly chosen from all the possible tile values (tile values is just an integer that could be a color or an index to a tile).
 2. Compute the fitness for each sample by computing the KL-Divergence between that sample and the `input_samples`.
+
   * Count the frequency of each tile pattern configuration of size `tp_size`x`tp_size` in the tested sample.
   * Count the frequency of each tile pattern configuration of size `tp_size`x`tp_size` in the `input_samples`.
   * Calculate the KL-Divergence for the tested sample with respect to `input_samples`. This value shows that every tile pattern configuration in the tested sample exists in the `input_samples`.
   * Calculate the KL-Divergence for `input_samples` with respect to the tested sample. This value shows that every tile pattern configuration in the `input_samples` exists in the tested sample.
   * Calculate the fitness as negated average weighted sum of the first and second KL-Divergence using `inter_weight`.
+  
 3. Generate a new mutated samples of size `pop_size` from the current samples based on their fitness value. Higher fitness individuals have higher chance to generate new samples than lower ones (`noise` can affect that value by giving low fitness individual higher chance to be selected).
   * Use [Rank Selection](https://stackoverflow.com/questions/20290831/how-to-perform-rank-based-selection-in-a-genetic-algorithm) to select a sample from the current population.
   * Clone that selected sample.
