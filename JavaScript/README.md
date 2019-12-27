@@ -1,6 +1,6 @@
-<p align="center">
-  <h1>ETPKLDiv JavaScript Implementation</h1>
-</p>
+<h1 align="center">
+ETPKLDiv JavaScript Implementation
+</h1>
 
 This is the javascript implementation of the ETPKLDiv method introduced by Lucas and Volz. For more understanding about the main algorithm and the interface check the main README.
 
