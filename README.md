@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="ETPKLDiv_logo.png"/>
+	<img height="400px" src="ETPKLDiv_logo.png"/>
 </p>
 
 <h1 align="center">
