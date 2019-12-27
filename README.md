@@ -32,7 +32,24 @@ Here are some example of the generated inputs using the [online interactive demo
 As you can see from the picture that the ETPKLDiv is not as strict as WFC in generation which sometimes in harder problems (like Mario and Flowers) stuck in local optima. We think by some parameter turning you might be able to get better results than the shown above. Also, we would like to experiment with some quality diversity techniques and having crossover and see its effect.
 
 ## Algorithm
-The algorithm is pretty simple with no complication. You can read more about it in [Lucas and Volz paper](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf). It uses an optimization algorithm (Evolution Strategy) to minimize the KL-Divergence value between the new generated map and the original data. KL-Divergence is a method that measure how close two distributions (in our case: the generated sample and the input sample) to each other. The distributions in our case is just a simple count of the different the tile pattern configurations of a certain size where tile pattern configurations are just a group of tiles beside each other. The algorithm at each step generate a new samples from the current by copying a tile pattern configuration from the input sample to the new one. The algorithm then pick the best and so on.
+The algorithm is pretty simple with no complication. You can read more about it in [Lucas and Volz paper](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf). It uses an optimization algorithm (`EvolutionStrategy`) to minimize the KL-Divergence value between the new generated map and the original data. KL-Divergence is a method that measure how close two distributions (in our case: the generated sample and the input sample) to each other. The distributions in our case is just a simple count of the different the tile pattern configurations of a certain size (`tp_size`) where tile pattern configurations are just a group of tiles beside each other. The algorithm at each step generate a new samples (`pop_size`) from the current (`pop_size`) by copying one or more (`mut_times`) tile pattern configuration from the input sample to the new one. The algorithm picks the best ones (`pop_size`) but allowing some bad ones if the user wants (`noise`).
+
+Here is a step by step algorithm if you are trying to replicate it:
+1. Create `pop_size` number of new samples with dimensions `width`x`height`. These samples values are randomly chosen from all the possible tile values (tile values is just an integer that could be a color or an index to a tile).
+2. Compute the fitness for each sample by computing the KL-Divergence between that sample and the `input_samples`.
+  1. Count the frequency of each tile pattern configuration of size `tp_size`x`tp_size` in the tested sample.
+	2. Count the frequency of each tile pattern configuration of size `tp_size`x`tp_size` in the `input_samples`.
+	3. Calculate the KL-Divergence for the tested sample with respect to `input_samples`. This value shows that every tile pattern configuration in the tested sample exists in the `input_samples`.
+	4. Calculate the KL-Divergence for `input_samples` with respect to the tested sample. This value shows that every tile pattern configuration in the `input_samples` exists in the tested sample.
+	5. Calculate the fitness as negated average weighted sum of the first and second KL-Divergence using `inter_weight`.
+3. Generate a new mutated samples of size `pop_size` from the current samples based on their fitness value. Higher fitness individuals have higher chance to generate new samples than lower ones (`noise` can affect that value by giving low fitness individual higher chance to be selected).
+  1. Use [Rank Selection](https://stackoverflow.com/questions/20290831/how-to-perform-rank-based-selection-in-a-genetic-algorithm) to select a sample from the current population.
+	2. Clone that selected sample.
+	3. Copy a `tp_size`x`tp_size` tile pattern configuration from the `input_samples` to a random location in the cloned sample. Repeat that as many times between `1` and `mut_times`.
+	4. Repeat the previous steps till we have `pop_size` new mutated samples.
+4. Merge the new mutated samples with the original samples and kill the lowest `pop_size` samples with respect to their fitness value (`noise` can affect that order by giving a higher chance to low fitness individual to survive).
+5. Repeat from the second step again till the number of `iterations` has been reached.
+
 
 Here is a some pictures of the algorithm in action (Don't worry the algorithm is a lot faster than that, it is just slowed down for rendering):
 
