@@ -1,4 +1,6 @@
-# ETPKLDiv C# Implementation
+<h1 align="center">
+ETPKLDiv C# Implementation
+</h1>
 
 This is the C# implementation of the ETPKLDiv method introduced by Lucas and Volz. For more understanding about the main algorithm and the interface check the main README.
 
