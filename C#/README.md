@@ -3,11 +3,11 @@
 This is the C# implementation of the ETPKLDiv method introduced by Lucas and Volz. For more understanding about the main algorithm and the interface check the main README.
 
 ## How to use
-The library is written in C# and compiled using [dotnet core 2.1](https://docs.microsoft.com/en-us/dotnet/core/tutorials/). The compiled file can be found in the [`bin`](https://github.com/amidos2006/ETPKLDiv/tree/master/C#/bin) folder. Add the compiled file ([`ETPKLDiv.dll`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/bin/ETPKLDiv.dll)) to your project (drag it to the unity assets folder).
+The library is written in C# and compiled using [dotnet core 2.1](https://docs.microsoft.com/en-us/dotnet/core/tutorials/). The compiled file can be found in the [`bin`](https://github.com/amidos2006/ETPKLDiv/tree/master/C%23/bin) folder. Add the compiled file ([`ETPKLDiv.dll`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/bin/ETPKLDiv.dll)) to your project (drag it to the unity assets folder).
 
-The way to use the library is pretty the same between all languages. It involves creating an object of the [`ETPKLDiv`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs) class. Followed by one of these two methods:
+The way to use the library is pretty the same between all languages. It involves creating an object of the [`ETPKLDiv`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs) class. Followed by one of these two methods:
 
-- **step by step:** you will need to call [`InitializePatternDictionary`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L78) followed by [`InitializeGeneration`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L101) then we can call [`Step`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L122) as many as needed to enhance the generated map. To get the best fitness call [`GetFitness`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L150) function and to get the best generated map call [`GetMap`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L161). Here is a simple example to illustrate:
+- **step by step:** you will need to call [`InitializePatternDictionary`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L78) followed by [`InitializeGeneration`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L101) then we can call [`Step`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L122) as many as needed to enhance the generated map. To get the best fitness call [`GetFitness`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L150) function and to get the best generated map call [`GetMap`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L161). Here is a simple example to illustrate:
 
 ```cs
 using ETPKLDivLibrary;
@@ -30,7 +30,7 @@ int[,] finalMap = etpkldiv.GetMap();
 double finalFitness = etpkldiv.GetFitness();
 ```
 
-- **full generation:** you will need to call [`Generate`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L186) and wait till it is done and return the best generated sample. After done, you can check for the fitness using [`GetFitness`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L150), or improve the result by calling [`Step`](https://github.com/amidos2006/ETPKLDiv/blob/master/C/code/ETPKLDiv.cs#L122) as many times as needed (beware: calling [`Generate`](https://github.com/amidos2006/ETPKLDiv/blob/master/C#/code/ETPKLDiv.cs#L186) again will restart everything from scratch erasing any previous progress). Here is a simple example to illustrate:
+- **full generation:** you will need to call [`Generate`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L186) and wait till it is done and return the best generated sample. After done, you can check for the fitness using [`GetFitness`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L150), or improve the result by calling [`Step`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L122) as many times as needed (beware: calling [`Generate`](https://github.com/amidos2006/ETPKLDiv/blob/master/C%23/code/ETPKLDiv.cs#L186) again will restart everything from scratch erasing any previous progress). Here is a simple example to illustrate:
 
 ```cs
 using ETPKLDivLibrary;
