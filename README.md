@@ -50,7 +50,6 @@ Here is a step by step algorithm if you are trying to replicate it:
 4. Merge the new mutated samples with the original samples and kill the lowest `pop_size` samples with respect to their fitness value (`noise` can affect that order by giving a higher chance to low fitness individual to survive).
 5. Repeat from the second step again till the number of `iterations` has been reached.
 
-
 Here is a some pictures of the algorithm in action (Don't worry the algorithm is a lot faster than that, it is just slowed down for rendering):
 
 <p align="center">
