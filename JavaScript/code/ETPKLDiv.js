@@ -143,5 +143,6 @@ export default class ETPKLDiv{
     while(this.getIteration()<iterations){
       this.step(inter_weight, mut_times, noise);
     }
+    return this.getMap();
   }
 }

@@ -68,6 +68,8 @@ export default class Chromosome{
       }
     }
     clone._fitness = this._fitness;
+    clone._first = this._first;
+    clone._second = this._second;
     return clone;
   }
 
@@ -93,8 +95,8 @@ export default class Chromosome{
       x.push(key);
       total_q += q[key];
     }
-    let first = 0;
-    let second = 0;
+    this._first = 0;
+    this._second = 0;
     for (let key of x){
       let p_dash = (this._epsilon)/((total_p + this._epsilon) * (1 + this._epsilon));
       let q_dash = (this._epsilon)/((total_q + this._epsilon) * (1 + this._epsilon));
@@ -104,11 +106,9 @@ export default class Chromosome{
       if (key in q){
         q_dash = (q[key] + this._epsilon)/((total_q + this._epsilon) * (1 + this._epsilon))
       }
-      first += p_dash * Math.log(p_dash/q_dash);
-      second += q_dash * Math.log(q_dash/p_dash);
+      this._first += p_dash * Math.log(p_dash/q_dash);
+      this._second += q_dash * Math.log(q_dash/p_dash);
     }
-    this._first = first;
-    this._second = second;
     this._fitness = -(w * this._first + (1-w) * this._second);
   }
 
@@ -161,6 +161,8 @@ export default class Chromosome{
       if(patterns.length > 0){
         clone._applyTP(patterns[clone._random.nextInt(patterns.length)], x, y);
         clone._fitness = null;
+        clone._first = null;
+        clone._second = null;
       }
     }
     return clone;
