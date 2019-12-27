@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace ETPKLDiv{
-  class ETPKLDiv{
+namespace ETPKLDivLibrary{
+  public class ETPKLDiv{
     /// optimizer object
     private EvolutionStrategy _es;
 

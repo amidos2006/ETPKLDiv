@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ETPKLDiv{
+namespace ETPKLDivLibrary{
   class TPDict{
     private Dictionary<int, PatternCounts> _q_counts;
     private Dictionary<int, PatternList> _patterns;

@@ -23,6 +23,8 @@ Here are some example of the generated inputs using the [online interactive demo
 <img src="ETPKLDiv.png" />
 </center>
 
+As you can see from the picture that the ETPKLDiv is not as strict as WFC in generation which sometimes in harder problems (like Mario and Flowers) stuck in local optima. We think by some parameter turning you might be able to get better results than the shown above. Also, we would like to experiment with some quality diversity techniques and having crossover and see its effect.
+
 ## Algorithm
 The algorithm is pretty simple with no complication. You can read more about it in [Lucas and Volz paper](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf). It uses an optimization algorithm (Evolution Strategy) to minimize the KL-Divergence value between the new generated map and the original data. KL-Divergence is a method that measure how close two distributions (in our case: the generated sample and the input sample) to each other. The distributions in our case is just a simple count of the different the tile pattern configurations of a certain size where tile pattern configurations are just a group of tiles beside each other. The algorithm at each step generate a new samples from the current by copying a tile pattern configuration from the input sample to the new one. The algorithm then pick the best and so on.
 
@@ -53,10 +55,9 @@ The API for the `ETPKLDiv` class is the same between all the implementation. The
 - Proper Documentation
 - Lua Implementation
 - C++ Implementation
-- C# Implementation
 - Python Implementation
 - Java Implementation
-- Unity Demo
+- Make more elaborate Unity demo
 - Phaser Demo
 - Defold Demo
 - Jupyter Notebook Demo
@@ -69,7 +70,7 @@ Contributing in this repo are very welcome. You can contribute in many facets ex
 Create a new folder with the name of the language or interface. Add your code inside and make sure that there is an `ETPKLDiv` class that can be created and have the same functions provided in [Common API section](https://github.com/amidos2006/ETPKLDiv/blob/master/README.md#common-api-interface). In the end add a `README.md` file to explain how to use it in that language with a small example.
 
 ### A new Demo
-Create a folder for the Demo. The name has to be the engine/languages name followed by " - Demo" similar to the "HTML - Demo". Get the latest build of the language needed from the corresponding language folder. Write your demo and make sure it is working fine. Make a pull request to the main repo.
+Create a folder for the Demo. The name has to be the engine/languages name followed by "Demo" similar to the "HTMLDemo". Get the latest build of the language needed from the corresponding language folder. Write your demo and make sure it is working fine. Make a pull request to the main repo.
 
 ### Bugs and Pull Requests
 Bug reports and pull requests are welcome on GitHub at https://github.com/amidos2006/etpkldiv.

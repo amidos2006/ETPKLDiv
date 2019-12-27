@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ETPKLDiv{
+namespace ETPKLDivLibrary{
   class EvolutionStrategy{
     private Random _random;
     private TPDict _tpdict;

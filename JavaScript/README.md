@@ -12,7 +12,7 @@ The library is written in ES6 and compiled to [iife](https://developer.mozilla.o
 </html>
 ```
 
-The way to use the library is pretty the same between all languages. It involves creating an object of the [`EPKLDiv`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js) class. Followed by one of these two methods:
+The way to use the library is pretty the same between all languages. It involves creating an object of the [`ETPKLDiv`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js) class. Followed by one of these two methods:
 
 - **step by step:** you will need to call [`initializePatternDictionary`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js#L78) followed by [`initializeGeneration`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js#L101) then we can call [`step`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js#L122) as many as needed to enhance the generated map. To get the best fitness call [`getFitness`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js#L150) function and to get the best generated map call [`getMap`](https://github.com/amidos2006/ETPKLDiv/blob/master/JavaScript/code/ETPKLDiv.js#L161). Here is a simple example to illustrate:
 

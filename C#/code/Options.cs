@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ETPKLDiv{
+namespace ETPKLDivLibrary{
   public class WarpOptions{
     private Dictionary<string, bool> _directions;
 

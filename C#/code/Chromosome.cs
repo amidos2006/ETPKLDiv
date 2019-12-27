@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ETPKLDiv{
+namespace ETPKLDivLibrary{
   class Chromosome{
     private TPDict _tpdict;
     private Random _random;

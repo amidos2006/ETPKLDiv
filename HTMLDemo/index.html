@@ -1,0 +1,446 @@
+<html>
+  <title>ETPKLDiv Test Project</title>
+  <style>
+    canvas{
+      width: 360px;
+      height: 360px;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    img{
+      width:16px;
+      height:16px;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      border: 1px solid black;
+    }
+    hr{
+      width:500px;
+    }
+    h1{
+      margin: 0px;
+    }
+    button{
+      width: 100px;
+    }
+    .full-row{
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      margin-bottom: 3px;
+      margin-top: 3px;
+    }
+  </style>
+  <body>
+    <div class="full-row">
+      <h1>ETP-KLDiv Demo</h1>
+    </div>
+    <hr>
+    <div class="full-row">
+      <canvas id="output_render"></canvas>
+    </div>
+    <div>
+      <div class="full-row">
+        <span>Iteration: </span><span id="iter-number">0</span>
+        <br>
+        <span> Fitness: </span><span id="fitness">-Infinity</span>
+      </div>
+      <hr>
+      <div class="full-row">
+        <span>Input: </span>
+        <select id="input_data" onchange="loadDefaultSettings(); restartGeneration()">
+          <option value="redblack">Red & Black</option>
+          <option value="whiteblack">White & Black</option>
+          <option value="flower">Flowers</option>
+          <option selected="selected" value="loderunner">Lode Runner</option>
+          <option value="mario">Super Mario</option>
+        </select>
+      </div>
+      <div class="full-row">
+        <span>Tile Pattern Size: </span>
+        <select id="tp_size" onchange="restartGeneration()">
+          <option value="2">2</option>
+          <option selected="selected" value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div class="full-row">
+        <span>Tile Pattern Warp: </span>
+        <input type="checkbox" id="warp_x" onchange="restartGeneration()" checked>X</input>
+        <input type="checkbox" id="warp_y" onchange="restartGeneration()">Y</input>
+      </div>
+      <div class="full-row">
+        <span>Fixed Borders: </span>
+        <input type="checkbox" id="border_top" onchange="restartGeneration()" checked>Top</input>
+        <input type="checkbox" id="border_bot" onchange="restartGeneration()" checked>Bottom</input>
+        <input type="checkbox" id="border_left" onchange="restartGeneration()">Left</input>
+        <input type="checkbox" id="border_right" onchange="restartGeneration()">Right</input>
+      </div>
+      <div class="full-row">
+        <span>Population: </span>
+        <select id="pop_size" onchange="restartGeneration()">
+          <option value="1">1</option>
+          <option selected="selected" value="2">2</option>
+          <option value="4">4</option>
+          <option value="8">8</option>
+        </select>
+      </div>
+      <hr>
+      <div class="full-row">
+        <span>Lock/Unlock Tiles: </span>
+        <template><input type="radio" name="lock" value="unlock"><img src="data/hover_image.png"></img></input></template>
+        <span id="radioButtons">
+
+        </span>
+      </div>
+      <div class="full-row">
+        <span>Asymmetric Weight: </span><input id="novelty" min=0 max=100 value=50 type="range"></input>
+      </div>
+      <div class="full-row">
+        <span>Temprature Noise: </span><input id="noise" min=0 max=100 value=0 type="range"></input>
+      </div>
+      <div class="full-row">
+        <span>Number of Mutations: </span><input id="mutations" min=1 max=5 value=1 type="range"></input>
+      </div>
+      <hr>
+      <div class="full-row">
+        <button onclick="restartGeneration()">Restart</button>
+        <button onclick="startPauseGeneration()">Start</button>
+      </div>
+    </div>
+    <hr>
+    <div class="full-row">
+      Based on  <a href="https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf">Lucas and Volz work</a>.
+      <br>
+      Created by <a href="http://akhalifa.com">Ahmed Khalfia</a>.
+      <br>
+      Check the full source code on  <a href="https://github.com/amidos2006/ETPKLDiv">Github</a>.
+    </div>
+  </body>
+  <script type="text/javascript" src="ETPKLDiv.js"></script>
+  <script type="text/javascript">
+    let outputCanvas = document.getElementById("output_render");
+    outputCanvas.width = 240;
+    outputCanvas.height = 240;
+    let outputContext2D = outputCanvas.getContext("2d");
+    outputContext2D.imageSmoothingEnabled = false;
+    outputContext2D.fillStyle = "#000000";
+    outputContext2D.fillRect(0,0,outputCanvas.width, outputCanvas.height);
+
+    let hover = new Image();
+    hover.src = "data/hover.png";
+
+    let lockedImage = new Image();
+    lockedImage.src = "data/locked.png";
+
+    let initialFrameID = -1;
+    let animationFrameID = -1;
+    let etpkldiv = new ETPKLDiv();
+
+    let tileX = -1;
+    let tileY = -1;
+    let mouseDown = false;
+    let lockedTiles = {};
+    outputCanvas.addEventListener('mousemove', function(evt){
+      let rect = outputCanvas.getBoundingClientRect();
+      let scaleX = outputCanvas.width / rect.width;
+      let scaleY = outputCanvas.height / rect.height;
+      let mouseX = (evt.clientX - rect.left) * scaleX;
+      let mouseY = (evt.clientY - rect.top) * scaleY;
+      tileX = Math.floor(mouseX/8);
+      tileY = Math.floor(mouseY/8);
+
+      if(mouseDown){
+        let selected = 0;
+        let children = document.getElementById("radioButtons").children;
+        for(let i=0; i<children.length; i++){
+          if ("checked" in children[i]){
+            if(children[i].checked){
+              selected = i/2;
+              break;
+            }
+          }
+        }
+        if(selected == 0){
+          etpkldiv.unlockTile(tileX, tileY);
+          delete lockedTiles[tileX+','+tileY];
+        }
+        else{
+          etpkldiv.lockTile(tileX, tileY, selected-1);
+          lockedTiles[tileX+','+tileY]={x:tileX, y:tileY};
+        }
+      }
+    });
+    outputCanvas.addEventListener('click', function(evt){
+      let selected = 0;
+      let children = document.getElementById("radioButtons").children;
+      for(let i=0; i<children.length; i++){
+        if ("checked" in children[i]){
+          if(children[i].checked){
+            selected = i/2;
+            break;
+          }
+        }
+      }
+      if(selected == 0){
+        etpkldiv.unlockTile(tileX, tileY);
+        delete lockedTiles[tileX+','+tileY];
+      }
+      else{
+        etpkldiv.lockTile(tileX, tileY, selected-1);
+        lockedTiles[tileX+','+tileY]={x:tileX, y:tileY};
+      }
+    });
+    outputCanvas.addEventListener('mousedown', function(evt){
+      mouseDown = true;
+    });
+    outputCanvas.addEventListener('mouseup', function(evt){
+      mouseDown = false;
+    })
+
+    let data = {};
+    let inputOptions = document.getElementById("input_data");
+    for(let i=0; i<inputOptions.options.length; i++){
+      data[inputOptions.options[i].value] = {map:null, img:null};
+      loadMapData(inputOptions.options[i].value);
+      loadImageData(inputOptions.options[i].value);
+    }
+
+    initialFrameID = setInterval(makeSureAllLoaded, 0);
+
+    function loadMapData(name){
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", "data/" + name + ".txt");
+      rawFile.onreadystatechange = function (){
+          if(rawFile.readyState === 4){
+              if(rawFile.status === 200 || rawFile.status == 0){
+                let map = [];
+                let lines = rawFile.responseText.split("\n");
+                for(let l of lines){
+                  l = l.trim();
+                  if(l.length > 0){
+                    map.push([]);
+                    for(let c of l){
+                      map[map.length-1].push(c.charCodeAt(0) - 'a'.charCodeAt(0));
+                    }
+                  }
+                }
+                data[name]["map"] = map;
+              }
+          }
+      }
+      rawFile.send(null);
+    }
+
+    function loadImageData(name){
+      let img = new Image();
+      img.src = "data/" + name + ".png";
+      //drawing of the test image - img1
+      img.onload = function () {
+        data[name]["img"] = img;
+      };
+    }
+
+    function renderMap(canvas, context, graphics, map){
+      context.fillRect(0,0,canvas.width,canvas.height);
+      for(let y=0; y<map.length; y++){
+        for(let x=0; x<map[y].length; x++){
+          context.drawImage(graphics,map[y][x]*8,0,8,8,x*8,y*8,8,8);
+        }
+      }
+      context.drawImage(hover, tileX*8, tileY*8);
+      for(let n in lockedTiles){
+        context.drawImage(lockedImage, lockedTiles[n]["x"]*8, lockedTiles[n]["y"]*8);
+      }
+    }
+
+    function makeSureAllLoaded(){
+      let allLoaded = true;
+      for(let name in data){
+        if(data[name]["img"] == null || data[name]["map"] == null){
+          allLoaded = false;
+        }
+      }
+      if(allLoaded){
+        clearInterval(initialFrameID);
+        restartGeneration();
+        initialFrameID = setInterval(initialStep, 0);
+      }
+    }
+
+    function initialStep(){
+      let inputData = document.getElementById("input_data");
+      inputData = data[inputData[inputData.selectedIndex].value];
+
+      renderMap(outputCanvas, outputContext2D, inputData.img, etpkldiv.getMap());
+    }
+
+    function updateStep(){
+      let inputData = document.getElementById("input_data");
+      inputData = data[inputData[inputData.selectedIndex].value];
+      let weight = parseFloat(document.getElementById("novelty").value)/100.0;
+      let noise = parseFloat(document.getElementById("noise").value)/100.0;
+      let mut_times = parseInt(document.getElementById("mutations").value);
+
+      etpkldiv.step(weight, mut_times, noise);
+      renderMap(outputCanvas, outputContext2D, inputData.img, etpkldiv.getMap());
+
+      document.getElementById("iter-number").innerText = etpkldiv.getIteration();
+      document.getElementById("fitness").innerText = etpkldiv.getFitness();
+    }
+
+    function loadDefaultSettings(){
+      let settings={
+        "redblack":{
+          "tp_size": 0,
+          "pop_size": 0,
+          "warp_x": true,
+          "warp_y": true,
+          "border_bot": false,
+          "border_top": false,
+          "border_left": false,
+          "border_right": false
+        },
+        "whiteblack":{
+          "tp_size": 0,
+          "pop_size": 0,
+          "warp_x": true,
+          "warp_y": true,
+          "border_bot": false,
+          "border_top": false,
+          "border_left": false,
+          "border_right": false
+        },
+        "flower":{
+          "tp_size": 1,
+          "pop_size": 3,
+          "warp_x": false,
+          "warp_y": false,
+          "border_bot": true,
+          "border_top": true,
+          "border_left": false,
+          "border_right": false
+        },
+        "loderunner":{
+          "tp_size": 1,
+          "pop_size": 1,
+          "warp_x": true,
+          "warp_y": true,
+          "border_bot": true,
+          "border_top": false,
+          "border_left": false,
+          "border_right": false
+        },
+        "mario":{
+          "tp_size": 2,
+          "pop_size": 3,
+          "warp_x": false,
+          "warp_y": false,
+          "border_bot": true,
+          "border_top": true,
+          "border_left": false,
+          "border_right": false
+        }
+      }
+
+      let name = document.getElementById("input_data");
+      name = name[name.selectedIndex].value;
+
+      for(let index in settings[name]){
+        if (index.indexOf("size") >= 0){
+          document.getElementById(index).selectedIndex = settings[name][index];
+        }
+        else{
+          document.getElementById(index).checked = settings[name][index];
+        }
+      }
+    }
+
+    function restartGeneration(){
+      lockedTiles = {};
+
+      let inputData = document.getElementById("input_data");
+      inputData = data[inputData[inputData.selectedIndex].value];
+      let tp_size = parseInt(document.getElementById("tp_size").value)
+      let pop_size = parseInt(document.getElementById("pop_size").value);
+
+      let warp_x = document.getElementById("warp_x").checked;
+      let warp_y = document.getElementById("warp_y").checked;
+
+      let border_top = document.getElementById("border_top").checked;
+      let border_bot = document.getElementById("border_bot").checked;
+      let border_left = document.getElementById("border_left").checked;
+      let border_right = document.getElementById("border_right").checked;
+
+      let radioButtons = document.getElementById("radioButtons");
+      radioButtons.innerHTML = '';
+
+      let template = document.getElementsByTagName("template")[0];
+      let clone = template.content.cloneNode(true);
+      clone.children[0].checked=true;
+      radioButtons.appendChild(clone);
+      for(let i=0; i<inputData.img.width/8; i++){
+        let tempCanvas = document.createElement("canvas");
+        tempCanvas.width = 8;
+        tempCanvas.height = 8;
+        tempCanvas.getContext("2d").drawImage(inputData.img,i*8,0,8,8,0,0,8,8);
+        clone = template.content.cloneNode(true);
+        clone.children[1].src=tempCanvas.toDataURL();
+        radioButtons.appendChild(clone);
+      }
+
+      etpkldiv.initializePatternDictionary([inputData.map], tp_size,
+        {"x": warp_x, "y": warp_y},
+        {"left": border_left, "right": border_right, "top": border_top, "bot": border_bot});
+      etpkldiv.initializeGeneration(30, 30, pop_size);
+      renderMap(outputCanvas, outputContext2D, inputData.img, etpkldiv.getMap());
+
+      document.getElementById("iter-number").innerText = etpkldiv.getIteration();
+      document.getElementById("fitness").innerText = "-Infinity";
+    }
+
+    function startPauseGeneration(){
+      if(animationFrameID == -1){
+        document.getElementById("input_data").disabled = true;
+        document.getElementById("tp_size").disabled = true;
+        document.getElementById("pop_size").disabled = true;
+
+        document.getElementById("warp_x").disabled = true;
+        document.getElementById("warp_y").disabled = true;
+
+        document.getElementById("border_top").disabled = true;
+        document.getElementById("border_bot").disabled = true;
+        document.getElementById("border_left").disabled = true;
+        document.getElementById("border_right").disabled = true;
+
+        clearInterval(initialFrameID);
+        animationFrameID = setInterval(updateStep, 0);
+        initialFrameID = -1;
+        document.getElementsByTagName('button')[1].innerText = "Stop";
+      }
+      else{
+        document.getElementById("input_data").disabled = false;
+        document.getElementById("tp_size").disabled = false;
+        document.getElementById("pop_size").disabled = false;
+
+        document.getElementById("warp_x").disabled = false;
+        document.getElementById("warp_y").disabled = false;
+
+        document.getElementById("border_top").disabled = false;
+        document.getElementById("border_bot").disabled = false;
+        document.getElementById("border_left").disabled = false;
+        document.getElementById("border_right").disabled = false;
+
+        clearInterval(animationFrameID);
+        initialFrameID = setInterval(initialStep, 0);
+        animationFrameID = -1;
+        document.getElementsByTagName('button')[1].innerText = "Start";
+      }
+    }
+  </script>
+</html>

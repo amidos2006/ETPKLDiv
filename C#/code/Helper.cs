@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ETPKLDiv{
+namespace ETPKLDivLibrary{
   class Pattern{
     private string _key;
     private int[,] _map;
