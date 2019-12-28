@@ -25,7 +25,7 @@ ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@
 
 Here are some examples of the generated inputs using the [online interactive demo](http://www.akhalifa.com/etpkldiv/):
 
-<p algin="center">
+<p align="center">
   <img src="ETPKLDiv.png" />
 </p>
 
