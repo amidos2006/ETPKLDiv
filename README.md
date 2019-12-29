@@ -23,6 +23,48 @@ ETPKLDiv Algrorithm was introduced by [Lucas and Volz](https://gecco2019:prague@
 
 </p>
 
+Here are some actual numbers from running the algorithm to generate new samples using `pop_size` equal to `1` and `tp_size` equal to `2` on the `red and black` picture from the Wave Function Collapse demo. We show the effect of the number of `iterations` with respect to the size of the generated sample (`width`x`height`). About the effect of `pop_size`, it doesn't need to be tested because it will always increase the time by that much unless we parallelize them. Also using higher `pop_size` find the solution faster (almost around `1/pop_size`). The `tp_size` effect on speed is pretty small where increasing it will increase the number of unique pattern that can be found in any of the images. But since the image size is fixed this means there is a limited amount of unique tiles can appear which is equal to the size of the sample. Because of that the effect of increasing `tp_size` is almost negligible.
+
+The following table show the results using the JavaScript implementation running on an old mac book pro from 2015. These values are averaged over multiple runs to get an accurate estimate.
+
+<p align="center">
+
+| Iterations | 30x30     | 60x60      | 120x120    |
+| ---------- | --------- | ---------- | ---------- |
+| 1000       | 0.438 sec | 1.768  sec | 9.598  sec |
+| 5000       | 2.002 sec | 8.023  sec | 46.839 sec |
+| 10000      | 3.985 sec | 16.080 sec | 91.976 sec |
+
+</p>
+
+That following table reports the results from the C# implementation on the same machine. These values are averaged over multiple runs to get an accurate estimate.
+
+<p align="center">
+
+| Iterations | 30x30      | 60x60      | 120x120     |
+| ---------- | ---------- | ---------- | ----------- |
+| 1000       | 0.972  sec | 4.381  sec | 24.490  sec |
+| 5000       | 4.778  sec | 21.560 sec | 125.510 sec |
+| 10000      | 10.204 sec | 20.340 sec | 112.943 sec |
+
+</p>
+
+As you can see that the C# implementation is slower than JavaScript (Sorry I am not great in C# as I didn't use it for awhile). Please help improve it if you are good with C# optimization.
+
+Here are some generate images at different iterations using the same input as before and map of size 30x30. Just remember the time for 10000 iterations is less than 4 seconds (in the JS implementation as it is more optimized) which will generate on the fly while your game is loading.
+
+<p align="center">
+
+| Iterations | Example 1 | Example 2 | Example 3 |
+| ---------- | --------- | --------- | --------- |
+| 1000       | ![ex11](examples/) | ![ex12](examples/) | ![ex13](examples/) |
+| 5000       | ![ex21](examples/) | ![ex22](examples/) | ![ex23](examples/) |
+| 10000      | ![ex31](examples/) | ![ex32](examples/) | ![ex33](examples/) |
+
+</p>
+
+As you can see the algorithm is pretty fast with amazing results in very short time (similar to WFC). But it is very noticeable that the speed drops a lot down when the output image increases. One of the solution is to divide the big image into a grid and generate every part of the grid separately. To blend these independent part you can generate a small image for the in between by fixing the stuff on the left and right and allow the algorithm to just update the middle.
+
 Here are some examples of the generated inputs using the [online interactive demo](http://www.akhalifa.com/etpkldiv/):
 
 <p align="center">
@@ -41,7 +83,7 @@ Here is a step by step algorithm if you are trying to replicate it:
    2. Count the frequency of each tile pattern configuration of size `tp_size`x`tp_size` in the `input_samples`.
    3. Calculate the KL-Divergence for the tested sample with respect to `input_samples`. This value shows that every tile pattern configuration in the tested sample exists in the `input_samples`.
    4. Calculate the KL-Divergence for `input_samples` with respect to the tested sample. This value shows that every tile pattern configuration in the `input_samples` exists in the tested sample.
-   5. Calculate the fitness as negated average weighted sum of the first and second KL-Divergence using `inter_weight`. 
+   5. Calculate the fitness as negated average weighted sum of the first and second KL-Divergence using `inter_weight`.
 3. Generate a new mutated sample of size `pop_size` from the current samples based on their fitness value. Higher fitness individuals have higher chance to generate new samples than lower ones (`noise` can affect that value by giving low fitness individual higher chance to be selected).
    1. Use [Rank Selection](https://stackoverflow.com/questions/20290831/how-to-perform-rank-based-selection-in-a-genetic-algorithm) to select a sample from the current population.
    2. Clone that selected sample.

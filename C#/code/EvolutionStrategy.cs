@@ -22,15 +22,14 @@ namespace ETPKLDivLibrary{
     }
 
     private Chromosome RankSelection(){
-      List<double> prob=new List<double>();
-      double total=0;
+      double[] prob=new double[this._chromosomes.Count];
       for(int i=0; i<this._chromosomes.Count; i++){
-        prob.Add(i+1);
+        prob[i] = i+1;
         if(i > 0){
           prob[i] += prob[i-1];
         }
-        total += prob[prob.Count-1];
       }
+      double total = prob[prob.Length-1];
       double temp = this._random.NextDouble();
       for(int i=0; i<this._chromosomes.Count; i++){
         if(temp < prob[i] / total){
@@ -73,7 +72,7 @@ namespace ETPKLDivLibrary{
       this._chromosomes = new List<Chromosome>();
       for(int i=0; i<pop_size; i++){
         this._chromosomes.Add(new Chromosome(this._tpdict, this._random, width, height));
-        this._chromosomes[i].RandomInitialize(new List<int>(){1}, this._borders);
+        this._chromosomes[i].RandomInitialize(1, this._borders);
       }
     }
 
@@ -92,7 +91,7 @@ namespace ETPKLDivLibrary{
 
       List<Chromosome> new_chromosomes = new List<Chromosome>();
       for(int j=0; j<this._chromosomes.Count; j++){
-        Chromosome c = this.RankSelection().Mutate(new List<int>(){this._tp_size}, mut_times, this._borders);
+        Chromosome c = this.RankSelection().Mutate(this._tp_size, mut_times, this._borders);
         new_chromosomes.Add(c);
       }
       this._chromosomes.AddRange(new_chromosomes);

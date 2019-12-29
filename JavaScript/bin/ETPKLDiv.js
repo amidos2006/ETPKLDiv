@@ -328,14 +328,13 @@ var ETPKLDiv = (function () {
      **/
     _rankSelection(chromosomes){
       let prob=[];
-      let total=0;
       for(let i=0; i<chromosomes.length; i++){
         prob.push(i+1);
         if(i > 0){
           prob[i] += prob[i-1];
         }
-        total += prob[prob.length-1];
       }
+      let total = prob[prob.length-1];
       let temp = this._random.next();
       for(let i=0; i<chromosomes.length; i++){
         if(temp < prob[i] / total){

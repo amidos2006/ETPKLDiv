@@ -32,14 +32,17 @@ namespace ETPKLDivLibrary{
 
   class PatternCounts{
     private Dictionary<string, int> _counts;
+    private List<string> _keys;
 
     public PatternCounts(){
       this._counts = new Dictionary<string, int>();
+      this._keys = new List<string>();
     }
 
     public void Add(string key){
       if(!this._counts.ContainsKey(key)){
         this._counts[key] = 0;
+        this._keys.Add(key);
       }
       this._counts[key] += 1;
     }
@@ -61,7 +64,7 @@ namespace ETPKLDivLibrary{
     }
 
     public List<string> Keys{
-      get{ return new List<string>(this._counts.Keys); }
+      get{ return this._keys; }
     }
   }
 

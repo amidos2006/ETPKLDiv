@@ -31,12 +31,10 @@ namespace ETPKLDivLibrary{
       this._locked = new bool[height, width];
     }
 
-    public void RandomInitialize(List<int> tp_sizes, BorderOptions borders){
+    public void RandomInitialize(int tp_size, BorderOptions borders){
       for(int y=0; y<this._height; y++){
         for(int x=0; x<this._width; x++){
-          int size = tp_sizes[this._random.Next(tp_sizes.Count)];
-          size = Math.Min(size, this._height - y);
-          size = Math.Min(size, this._width - x);
+          int size = tp_size;
           PatternList patterns = this._tpdict.GetTPArray(size);
           PatternList border_patterns = new PatternList();
           if(borders != null){
@@ -139,11 +137,11 @@ namespace ETPKLDivLibrary{
       return this._map;
     }
 
-    public Chromosome Mutate(List<int> tp_sizes, int mut_times, BorderOptions borders){
+    public Chromosome Mutate(int tp_size, int mut_times, BorderOptions borders){
       Chromosome clone = this.Clone();
       int times = Math.Max(0, this._random.Next(mut_times)) + 1;
       for(int i=0; i<times; i++){
-        int size = tp_sizes[this._random.Next(tp_sizes.Count)];
+        int size = tp_size;
         int x = clone._random.Next(clone._width - size + 1);
         int y = clone._random.Next(clone._height - size + 1);
         PatternList patterns = clone._tpdict.GetTPArray(size);
