@@ -57,9 +57,9 @@ Here are some generate images at different iterations using the same input as be
 
 | Iterations | Example 1 | Example 2 | Example 3 |
 | ---------- | --------- | --------- | --------- |
-| 1000       | ![ex11](examples/) | ![ex12](examples/) | ![ex13](examples/) |
-| 5000       | ![ex21](examples/) | ![ex22](examples/) | ![ex23](examples/) |
-| 10000      | ![ex31](examples/) | ![ex32](examples/) | ![ex33](examples/) |
+| 1000       | ![ex11](examples/1000_1.png) | ![ex12](examples/1000_2.png) | ![ex13](examples/1000_3.png) |
+| 5000       | ![ex21](examples/5000_1.png) | ![ex22](examples/5000_2.png) | ![ex23](examples/5000_3.png) |
+| 10000      | ![ex31](examples/10000_1.png) | ![ex32](examples/10000_2.png) | ![ex33](examples/10000_3.png) |
 
 </p>
 
