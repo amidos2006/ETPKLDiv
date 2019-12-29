@@ -57,7 +57,7 @@ Here are some generate images at different iterations using several different in
 
 | Iterations | Example 1 | Example 2 | Example 3 |
 | ---------- | --------- | --------- | --------- |
-| 1000       | ![](examples/rb_1000_1.png | width=100) ![](examples/lr_1000_1.png) | ![](examples/rb_1000_2.png) ![](examples/lr_1000_2.png) | ![](examples/rb_1000_3.png) ![](examples/lr_1000_3.png) |
+| 1000       | ![](examples/rb_1000_1.png) ![](examples/lr_1000_1.png) | ![](examples/rb_1000_2.png) ![](examples/lr_1000_2.png) | ![](examples/rb_1000_3.png) ![](examples/lr_1000_3.png) |
 | 5000       | ![](examples/rb_5000_1.png) ![](examples/lr_5000_1.png) | ![](examples/rb_5000_2.png) ![](examples/lr_5000_2.png) | ![](examples/rb_5000_3.png) ![](examples/lr_5000_3.png) |
 | 10000      | ![](examples/rb_10000_1.png) ![](examples/lr_10000_1.png) | ![](examples/rb_10000_2.png) ![](examples/lr_10000_2.png) | ![](examples/rb_10000_3.png) ![](examples/lr_10000_3.png) |
 
