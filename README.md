@@ -57,9 +57,9 @@ Here are some generate images at different iterations using several different in
 
 | Iterations | Example 1 | Example 2 | Example 3 |
 | ---------- | --------- | --------- | --------- |
-| 1000       | ![rb11](examples/rb_1000_1.png) ![lr11](examples/lr_1000_1.png) | ![rb12](examples/rb_1000_2.png) ![lr12](examples/lr_1000_2.png) | ![rb13](examples/rb_1000_3.png) ![lr13](examples/lr_1000_3.png) |
-| 5000       | ![rb21](examples/rb_5000_1.png) ![lr21](examples/lr_5000_1.png) | ![rb22](examples/rb_5000_2.png) ![lr22](examples/lr_5000_2.png) | ![rb23](examples/rb_5000_3.png) ![lr23](examples/lr_5000_3.png) |
-| 10000      | ![rb31](examples/rb_10000_1.png) ![lr31](examples/lr_10000_1.png) | ![rb32](examples/rb_10000_2.png) ![lr32](examples/lr_10000_2.png) | ![rb33](examples/rb_10000_3.png) ![lr33](examples/lr_10000_3.png) |
+| 1000       | <img height="100px"src="examples/rb_1000_1.png" /> <img height="100px"src="examples/lr_1000_1.png" /> | <img height="100px"src="examples/rb_1000_2.png" /> <img height="100px"src="examples/lr_1000_2.png" /> | <img height="100px"src="examples/rb_1000_3.png" /> <img height="100px"src="examples/lr_1000_3.png" /> |
+| 5000       | <img height="100px"src="examples/rb_5000_1.png" /> <img height="100px"src="examples/lr_5000_1.png" /> | <img height="100px"src="examples/rb_5000_2.png" /> <img height="100px"src="examples/lr_5000_2.png" /> | <img height="100px"src="examples/rb_5000_3.png" /> <img height="100px"src="examples/lr_5000_3.png" /> |
+| 10000      | <img height="100px"src="examples/rb_10000_1.png" /> <img height="100px"src="examples/lr_10000_1.png" /> | <img height="100px"src="examples/rb_10000_2.png" /> <img height="100px"src="examples/lr_10000_2.png" /> | <img height="100px"src="examples/rb_10000_3.png" /> <img height="100px"src="examples/lr_10000_3.png" /> |
 
 </p>
 
