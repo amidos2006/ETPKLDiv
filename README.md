@@ -51,15 +51,15 @@ That following table reports the results from the C# implementation on the same 
 
 As you can see that the C# implementation is slower than JavaScript (Sorry I am not great in C# as I didn't use it for awhile). Please help improve it if you are good with C# optimization.
 
-Here are some generate images at different iterations using the same input as before and map of size 30x30. Just remember the time for 10000 iterations is less than 4 seconds (in the JS implementation as it is more optimized) which will generate on the fly while your game is loading.
+Here are some generate images at different iterations using several different input images and map of size 30x30. All these results are using `inter_weight` equal to 0.5. Results quality differ based on that value, for some applications having low `inter_weight` might cause producing a more appealing images at fewer iterations than others and vice versa. Just remember the time for 10000 iterations is less than 4 seconds (in the JS implementation as it is more optimized) which will generate on the fly while your game is loading.
 
 <p align="center">
 
 | Iterations | Example 1 | Example 2 | Example 3 |
 | ---------- | --------- | --------- | --------- |
-| 1000       | ![ex11](examples/1000_1.png) | ![ex12](examples/1000_2.png) | ![ex13](examples/1000_3.png) |
-| 5000       | ![ex21](examples/5000_1.png) | ![ex22](examples/5000_2.png) | ![ex23](examples/5000_3.png) |
-| 10000      | ![ex31](examples/10000_1.png) | ![ex32](examples/10000_2.png) | ![ex33](examples/10000_3.png) |
+| 1000       | ![rb11](examples/rb_1000_1.png) ![lr11](examples/lr_1000_1.png) | ![rb12](examples/rb_1000_2.png) ![lr12](examples/lr_1000_2.png) | ![rb13](examples/rb_1000_3.png) ![lr13](examples/lr_1000_3.png) |
+| 5000       | ![rb21](examples/rb_5000_1.png) ![lr21](examples/lr_5000_1.png) | ![rb22](examples/rb_5000_2.png) ![lr22](examples/lr_5000_2.png) | ![rb23](examples/rb_5000_3.png) ![lr23](examples/lr_5000_3.png) |
+| 10000      | ![rb31](examples/rb_10000_1.png) ![lr31](examples/lr_10000_1.png) | ![rb32](examples/rb_10000_2.png) ![lr32](examples/lr_10000_2.png) | ![rb33](examples/rb_10000_3.png) ![lr33](examples/lr_10000_3.png) |
 
 </p>
 
@@ -71,7 +71,7 @@ Here are some examples of the generated inputs using the [online interactive dem
   <img height="700px" src="ETPKLDiv.png" />
 </p>
 
-As you can see from the picture that the ETPKLDiv is not as strict as WFC in generation which sometimes in harder problems (like Mario and Flowers) will get stuck in local optima. We think by some parameter tuning you might be able to get better results than shown above. Also, we would like to experiment with some quality diversity techniques and having crossover and see its effect.
+As you can see from the picture that the ETPKLDiv is not as strict as WFC in generation which sometimes in harder problems (like Mario and Flowers) will get stuck in local optima. We think by some parameter tuning you might be able to get better results than shown above. Also, we would like to experiment with some quality diversity techniques and having crossover and see its effect. Also, locking some tiles to certain values will make the algorithm generate better results as it is guiding it towards a more desirable output.
 
 ## Algorithm
 The algorithm is pretty simple with no complication. You can read more about it in [Lucas and Volz paper](https://gecco2019:prague@gecco-2019.sigevo.org/proceedings_2019/proceedings/proceedings_files/pap291s3-file1.pdf). It uses an optimization algorithm (`EvolutionStrategy`) to minimize the KL-Divergence value between the new generated map and the original data. KL-Divergence is a method that measures how close two distributions (in our case: the generated sample and the input sample) are to each other. The distributions in our case are just a simple count of the difference in the tile pattern configurations of a certain size (`tp_size`) where tile pattern configurations are just a group of tiles beside each other. The algorithm at each step generate a new sample (`pop_size`) from the current one (`pop_size`) by copying one or more (`mut_times`) tile pattern configuration from the input sample to the new one. The algorithm picks the best ones (`pop_size`) but allowing some bad ones if the user wants (`noise`).
